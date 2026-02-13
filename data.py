@@ -34,5 +34,6 @@ def add(name, password):
     con.commit()
     con.close()
 
-conn()
+create()
 add("admin", 111)
+list_table()
