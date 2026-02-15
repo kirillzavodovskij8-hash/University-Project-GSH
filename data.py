@@ -4,17 +4,17 @@ db_name = "data_base.db"
 
 def conn():
     return sqlite3.connect(db_name)
-    
+
 
 def create():
     con = conn()
     cur = con.cursor()
-    cur.execute
-    ("""CREATE TABLE IF NOT EXISTS table
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT,
-        pasword INTEGER,
-        """)
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    pasword INTEGER,)
+    """)
     con.commit()
     con.close()
 def list_table():
@@ -22,15 +22,15 @@ def list_table():
     cur = con.cursor()
     cur.execute("SELECT * FROM table")
     a = cur.fetchall()
-    for name, password in a:
-        print(name, password)
+    for row in a:
+        print(row[1], row[2])
     con.commit()
     con.close()
 
 def add(name, password):
     con = conn()
     cur = con.cursor()
-    cur.execute("INSERT INTO table (name, password) VALUES (?, ?)", (name, password))
+    cur.execute("INSERT INTO users (name, password) VALUES (?, ?)", (name, password))
     con.commit()
     con.close()
 
