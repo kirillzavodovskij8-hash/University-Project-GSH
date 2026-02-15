@@ -35,5 +35,5 @@ def add(name, password):
     con.close()
 
 create()
-add("admin", 111)
+add("admin111", 11)
 list_table()

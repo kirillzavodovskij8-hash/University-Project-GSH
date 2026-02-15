@@ -8,21 +8,40 @@ def conn():
 def create():
     con = conn()
     cur = con.cursor()
-    cur.execute("""CREATE TABLE table (
-    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    pasword INTEGER NOT NULL,""")
+    # name уникален — не будет повторов
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS users_bd (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE,
+            password INTEGER NOT NULL
+        )
+    """)
     con.commit()
     con.close()
 
-def add(name, pasword):
+def add(name, password):
     con = conn()
     cur = con.cursor()
-    cur.execute("INSERT INTO table (name, pasword) VALUES (?, ?)", (name, pasword))
-    con.commit()
+    # проверяем, есть ли уже запись с таким name
+    cur.execute("SELECT id FROM users_bd WHERE name = ?", (name,))
+    result = cur.fetchone()
+    if result is None:
+        # вставляем только если записи нет
+        cur.execute("INSERT INTO users_bd (name, password) VALUES (?, ?)", (name, password))
+        con.commit()
     con.close()
 
+def list_table():
+    con = conn()
+    cur = con.cursor()
+    cur.execute("SELECT * FROM users_bd")
+    rows = cur.fetchall()
+    for row in rows:
+        print(row[1], row[2])
+    con.close()
 
 if __name__ == "__main__":
     create()
     add("admin", 111)
+    add("admin12", 111)  # не добавится
+    list_table()
